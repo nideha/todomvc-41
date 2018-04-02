@@ -32,7 +32,17 @@
 			<template v-if="todos.length">
 				<!-- This section should be hidden by default and shown when there are todos -->
 				<section class="main">
-					<input id="toggle-all" class="toggle-all" type="checkbox">
+					<!-- 标记所有任务未完成或者未完成状态 
+							 注册点击事件
+							 获取复选框的状态
+							 循环把所有任务项.done = 复选框的状态
+							 即把复选框的状态赋值给所有任务项-->
+					<input
+						id="toggle-all"
+						class="toggle-all"
+						type="checkbox"
+						v-model="toggleAllstat">
+						<!-- @click="toggleAll"> -->
 					<label for="toggle-all">Mark all as complete</label>
 					<ul class="todo-list">
 						<!-- These are here just to show the structure of the list items -->
@@ -51,7 +61,7 @@
 							:class="{
 								completed:item.done,
 								editing:item===currentEdit}"
-							v-for="(item,index) in todos">
+							v-for="(item,index) in filterTodos">
 							<!-- 获取数组的索引：(遍历项(这里是item),index) -->
 							<div class="view">
 								<input
@@ -81,21 +91,26 @@
 				<!-- This footer should hidden by default and shown when there are todos -->
 				<footer class="footer">
 					<!-- This should be `0 items left` by default -->
-					<span class="todo-count"><strong>0</strong> item left</span>
+					<span class="todo-count">
+						<strong>{{ remaining }}</strong> item left</span>
 					<!-- Remove this if you don't implement routing -->
+					<!-- 数据过滤 -->
 					<ul class="filters">
 						<li>
-							<a class="selected" href="#/">All</a>
+							<a :class="{selected:hash==='#/' }" href="#/">All</a>
 						</li>
 						<li>
-							<a href="#/active">Active</a>
+							<a :class="{selected:hash==='#/active' }" href="#/active">Active</a>
 						</li>
 						<li>
-							<a href="#/completed">Completed</a>
+							<a :class="{selected:hash==='#/completed' }" href="#/completed">Completed</a>
 						</li>
 					</ul>
 					<!-- Hidden if no completed items are left ↓ -->
-					<button class="clear-completed">Clear completed</button>
+					<!-- 清除所有已完成的任务项 -->
+					<button
+						class="clear-completed"
+						@click="clearAllDone">Clear completed</button>
 				</footer>
 			</template>
 			
